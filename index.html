@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">    
+    <style>
+        #overlay{
+            position: fixed;
+            top:0;
+            bottom:0;
+            left:0;
+            right:0;
+            background: rgba(0, 0,0,0.6);   
+        }
+    </style>
+</head>
+<body>
+  
+<div id="app">
+    <div class="container-fluid">
+        <div class="row bg-dark">
+            <div class = "col -lg-12">
+                <p class="text-center text-light display-4 pt-2">Membuat daftar Tugas!</p>
+            </div>
+        </div>
+    </div>
+    <i class="fas fa-clock"></i>
+    <div class="container">
+        <div class="row mt-3">
+            <div class="col-lg-6">
+                <h3 class="text-info">Registered Tugas</h3>
+            </div>            
+            <div class="col-lg-6">
+                <button class="btn btn-info float-right" @click="showAddModal=true">
+                <i class="fas fa-user">ADD New TASK
+                </button>
+            </div>
+        </div>
+        <hr class="bg-info">
+        <div class="alert alert-danger" v-if="errorMsg">
+            {{ errorMsg }}
+        </div>
+        <div class="alert alert-success" v-if="successMsg">
+            {{ successMsg }}
+        </div>
+
+        <!-- Displaying -->
+        <div class="row">
+            <div class="col-lg-12">
+                <table class="table table-bordered table-stripped">
+                    <thead>
+                        <tr class="text-center bg-info text-light">
+                            <th>Id</th>
+                            <th>Nama Tugas</th>
+                            <th>Keterangan</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="text-center" v-for="user in tugasvue" >
+                           
+                            <td>{{user.id}}</td>
+                            <td>{{user.Tugas}}</td>                         
+                            <td>{{user.Keterangan}}</td>
+                            <td><button class="text-success" @click="showEditModal=true">edit</button></td>
+                            <td><button class="text-danger"  @click="showDeleteModal=true" >delete</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- add New Task -->
+    <div id="overlay" v-if="showAddModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Task</h5>
+                    <button type="button" class="close" @click="showAddModal=false">
+                        <span aria-hidden="true">close</span>
+                    </button>
+                </div>
+                    <div class="modal-body p-4">
+                        <form action="#" method="post">
+                            <div class="form-group">
+                                <input type="text" name="Tugas" class="form-control form-control-lg" placeholder="nama Tugas" v-model="newTugas.Tugas">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" name="keterangan" class="form-control form-control-lg" placeholder="keterangan tugas" v-model="newTugas.Keterangan">
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-info btn-block btn-lg" @click="showAddModal=false; addTugas();">Add Task</button>
+                            </div>
+                        </form>
+
+                    </div>
+            </div>
+
+        </div>
+    </div>
+
+     <!-- Edit Task -->
+     <div id="overlay" v-if="showEditModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Task</h5>
+                    <button type="button" class="close" @click="showEditModal=false">
+                        <span aria-hidden="true">close</span>
+                    </button>
+                </div>
+                    <div class="modal-body p-4">
+                        <form action="#" method="post">
+                            <div class="form-group">
+                                <input type="text" name="Tugas" class="form-control form-control-lg" placeholder="nama Tugas">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" name="keterangan" class="form-control form-control-lg" placeholder="keterangan tugas">
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-info btn-block btn-lg">Edit Task</button>
+                            </div>
+                        </form>
+
+                    </div>
+            </div>
+
+        </div>
+    </div>
+
+     <!-- Delete Task -->
+     <div id="overlay" v-if="showDeleteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Task</h5>
+                    <button type="button" class="close" @click="showDeleteModal=false">
+                        <span aria-hidden="true">close</span>
+                    </button>
+                </div>
+                    <div class="modal-body p-4">
+                        <h4 class="text-danger">Apakah kamu mau menghapus Tugas ini?</h4>
+                        <h5>Kamu menghapus 'Vue JS'</h5>
+                      
+                        <hr>   
+                        <button class="btn btn-danger btn-lg"  @click="showDeleteModal=false">Yes</button>
+                        <button class="btn btn-success btn-lg" @click="showDeleteModal=false">No</button>
+                    
+                    </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script>
+        var app = new Vue ({
+    el: '#app',
+    data: {
+        errorMsg: "",
+        successMsg: "",
+        showAddModal: false,
+        showEditModal: false,
+        showDeleteModal: false,
+        tugasvue: [],
+        newTugas: {Tugas: "",Keterangan: ""},
+        currentTugas:{}
+    },
+    mounted: function(){
+        this.getAllTugas();
+    },
+    methods:{ 
+        getAllTugas(){
+            axios.post("http://localhost:81/DOT-Daftar%20Tugas/proses.php?action=read").then(function(response){ 
+            if(response.data.error){
+                     app.errorMsg = response.data.message;
+                 }
+                 else{
+                     app.tugasvue = response.data.tugasvue;
+                 }
+                console.log(response);
+            });
+        }
+    }
+});
+    </script>
+</body>
+</html>
